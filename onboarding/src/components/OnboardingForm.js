@@ -16,13 +16,16 @@ const OnboardingForm = ({ errors, touched, values, status }) => {
     return (
       <div key={user.id}>
         <p>{user.name}</p>
-        <p>{user.email}</p>
+        <p>{user.gender}</p>
         <p>{user.role}</p>
+        <p>{user.phone}</p>
+        <p>{user.address}</p>
+        <p>{user.email}</p>
       </div>
     );
   }
   return (
-    <div>
+    <div className='wrapper'>
       <Form className="onboarding-form">
         <h1 className="title">Welcome! </h1>
         {touched.name && errors.name && <p className="error">{errors.name}</p>}
@@ -32,12 +35,44 @@ const OnboardingForm = ({ errors, touched, values, status }) => {
           name="name"
           placeholder="please enter your name"
         />
-
-        <Field component='select' className="role" name="role">
-          <option value=''>Please choose</option>
-          <option value='front-end' name="front-end">Front End</option>
-          <option value='front-end' name="back-end">Back End</option>
-          <option value='front-end' name="ui-ux">UI/UX</option>
+         {touched.address && errors.address && (
+          <p className="error">{errors.address}</p>
+        )}
+        <Field
+          className="field"
+          type="text"
+          name="address"
+          placeholder="please enter your address"
+        />
+         {touched.phone && errors.phone && (
+          <p className="error">{errors.phone}</p>
+        )}
+        <Field
+          className="field"
+          type=""
+          name="phone"
+          placeholder="please enter your Phone Number"
+        />
+         {touched.gender && errors.gender && (
+          <p className="error">{errors.gender}</p>
+        )}
+        <Field component="select" className="drop" name="gender">
+          <option value="">Please choose gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="prefer-not">Prefer not to Say</option>
+        </Field>
+        <Field component="select" className="drop" name="role">
+          <option value="">Please choose role</option>
+          <option value="front-end" name="front-end">
+            Front End
+          </option>
+          <option value="front-end" name="back-end">
+            Back End
+          </option>
+          <option value="front-end" name="ui-ux">
+            UI/UX
+          </option>
         </Field>
         {touched.email && errors.email && (
           <p className="error">{errors.email}</p>
@@ -79,10 +114,22 @@ const OnboardingForm = ({ errors, touched, values, status }) => {
   );
 };
 const OnboardingHOC = withFormik({
-  mapPropsToValues({ name, email, password, role, terms }) {
+  mapPropsToValues({
+    name,
+    email,
+    password,
+    phone,
+    address,
+    role,
+    gender,
+    terms
+  }) {
     return {
       name: name || "",
       email: email || "",
+      phone: phone || "",
+      address: address || "",
+      gender: gender || "please chose a gender",
       role: role || "Please Choose a role",
       password: password || "",
       terms: terms || false
@@ -93,6 +140,14 @@ const OnboardingHOC = withFormik({
     name: Yup.string()
       .required("name is required to continue")
       .min(3),
+    address: Yup.string()
+      .required("address is required to continue")
+      .min(15),
+    phone: Yup.string()
+      .required("phone number is required to continue")
+      .min(10),
+    gender: Yup.string()
+      .required("gender is required to continue"),
     email: Yup.string()
       .email()
       .required("email is required to continue"),
